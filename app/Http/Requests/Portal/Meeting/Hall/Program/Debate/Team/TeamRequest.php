@@ -22,7 +22,7 @@ class TeamRequest extends FormRequest
                     'sort_order' => 'nullable|integer',
                     'debate_id' => 'required|exists:meeting_hall_program_debates,id',
                     'code' => 'nullable|max:255',
-                    'logo' => ['nullable', File::types(['png'])->max(12 * 1024),],
+                    'logo' => ['nullable', File::types(['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'])->max(12 * 1024),],
                     'title' => 'required|max:255',
                     'description' => 'nullable|max:65535',
                 ];
