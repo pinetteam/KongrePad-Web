@@ -13,20 +13,19 @@ class MeetingResource extends JsonResource
         $activeSessions = [];
         foreach ($this->halls as $hall) {
             foreach ($hall->programs as $program) {
-                if ($program->on_air) {
-                    foreach ($program->sessions as $session) {
-                        if ($session->on_air) {
-                            $activeSessions[] = [
-                                'id' => $session->id,
-                                'hall_id' => $hall->id,
-                                'hall_title' => $hall->title,
-                                'program_id' => $program->id,
-                                'program_title' => $program->title,
-                                'session_title' => $session->title,
-                                'speaker_name' => $session->speaker ? $session->speaker->full_name : null,
-                                'on_air' => true,
-                            ];
-                        }
+                // Check if program is active
+                foreach ($program->sessions as $session) {
+                    if ($session->on_air) {
+                        $activeSessions[] = [
+                            'id' => $session->id,
+                            'hall_id' => $hall->id,
+                            'hall_title' => $hall->title,
+                            'program_id' => $program->id,
+                            'program_title' => $program->title,
+                            'session_title' => $session->title,
+                            'speaker_name' => $session->speaker ? $session->speaker->full_name : null,
+                            'on_air' => true,
+                        ];
                     }
                 }
             }
