@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Service\SMS\NetGSM\SendSMS;
+use App\Service\SMS\NetGSM;
 use App\Http\Requests\Portal\User\PhoneRequest;
 use App\Models\System\Country\Country;
 use Illuminate\Http\Request;
@@ -47,7 +47,9 @@ class VerificationController extends Controller
             $auth_code = strval(mt_rand(100000, 999999));
             $user->verification_code = $auth_code;
             $user->save();
-            SendSMS::toMany($country->phone_code, $user->phone, $auth_code . __('common.is-your-kongrepad-verification-code'));
+            $netgsm = new NetGSM();
+            $phone_with_code = $country->phone_code . $user->phone;
+            $netgsm->sendToOne($phone_with_code, $auth_code . ' ' . __('common.is-your-kongrepad-verification-code'));
             return back()->with('success', __('common.sms-send-successfully'));
         } catch(\Exception $e) {
             return back()->with('error', __('common.a-system-error-has-occurred'));
