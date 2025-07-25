@@ -48,6 +48,7 @@ class ParticipantRequest extends FormRequest
                     'phone_country_id' => 'nullable|exists:system_countries,id|required_with:phone',
                     'phone' => 'nullable|max:31|required_with:phone_country_id',
                     'password' => 'required|max:255',
+                    'type' => 'required|in:agent,attendee,team',
                     'status' => 'required|boolean',
                 ];
             }
