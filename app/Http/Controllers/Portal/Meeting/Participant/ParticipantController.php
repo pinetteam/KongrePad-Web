@@ -59,7 +59,7 @@ class ParticipantController extends Controller
         if ($request->validated()) {
             $participant = new Participant();
             $participant->meeting_id = $meeting;
-            $participant->username = Str::uuid()->toString();
+            $participant->username = $request->input('username');
             $participant->title = $request->input('title');
             $participant->first_name = $request->input('first_name');
             $participant->last_name = $request->input('last_name');
@@ -103,6 +103,7 @@ class ParticipantController extends Controller
         if ($request->validated()) {
             $meeting = Auth::user()->customer->meetings()->findOrFail($meeting);
             $participant = $meeting->participants()->findOrFail($id);
+            $participant->username = $request->input('username');
             $participant->title = $request->input('title');
             $participant->first_name = $request->input('first_name');
             $participant->last_name = $request->input('last_name');

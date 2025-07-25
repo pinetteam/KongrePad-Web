@@ -19,6 +19,7 @@ class ParticipantRequest extends FormRequest
             {
                 return [
                     'meeting_id' => 'required|exists:meetings,id',
+                    'username' => 'required|max:255|unique:meeting_participants,username',
                     'title' => 'nullable|max:255',
                     'first_name' => 'required|max:255',
                     'last_name' => 'required|max:255',
@@ -32,10 +33,12 @@ class ParticipantRequest extends FormRequest
                     'status' => 'required|boolean',
                 ];
             }
-            case 'PATCH' || 'PUT':
+            case 'PUT':
+            case 'PATCH':
             {
                 return [
                     'meeting_id' => 'required|exists:meetings,id',
+                    'username' => 'required|max:255|unique:meeting_participants,username,' . $this->route('id'),
                     'title' => 'nullable|max:255',
                     'first_name' => 'required|max:255',
                     'last_name' => 'required|max:255',
@@ -55,6 +58,7 @@ class ParticipantRequest extends FormRequest
     {
         return [
             'meeting_id' => __('common.meeting'),
+            'username' => __('common.username'),
             'title' => __('common.title'),
             'first_name' => __('common.first-name'),
             'last_name' => __('common.last-name'),

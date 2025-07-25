@@ -24,6 +24,7 @@
                     <thead class="thead-dark">
                         <tr>
                             <th scope="col"><span class="fa-regular fa-id-card mx-1"></span> {{ __('common.name') }}</th>
+                            <th scope="col"><span class="fa-regular fa-user mx-1"></span> {{ __('common.username') }}</th>
                             <th scope="col"><span class="fa-regular fa-fingerprint mx-1"></span> {{ __('common.identification-number') }}</th>
                             <th scope="col"><span class="fa-regular fa-building-columns mx-1"></span> {{ __('common.organisation') }}</th>
                             <th scope="col"><span class="fa-regular fa-envelope mx-1"></span> {{ __('common.email') }}</th>
@@ -47,6 +48,7 @@
                                     @endif
                                     {{ $participant->last_name }}, {{ $participant->first_name }}
                                 </td>
+                                <td>{{ $participant->username }}</td>
                                 <td>{{ $participant->identification_number_show }}</td>
                                 <td>{{ $participant->organisation_show }}</td>
                                 <td>{{ $participant->email }}</td>
@@ -124,6 +126,7 @@
             <x-input.text method="c" name="title" title="title" icon="input-text" />
             <x-input.text method="c" name="first_name" title="first-name" icon="id-card" />
             <x-input.text method="c" name="last_name" title="last-name" icon="id-card" />
+            <x-input.text method="c" name="username" title="username" icon="user" />
             <x-input.text method="c" name="identification_number" title="identification-number" icon="fingerprint" />
             <x-input.text method="c" name="organisation" title="organisation" icon="building-columns" />
             <x-input.email method="c" name="email" title="email" icon="envelope" />
@@ -141,6 +144,7 @@
             <x-input.text method="e" name="title" title="title" icon="input-text" />
             <x-input.text method="e" name="first_name" title="first-name" icon="id-card" />
             <x-input.text method="e" name="last_name" title="last-name" icon="id-card" />
+            <x-input.text method="e" name="username" title="username" icon="user" />
             <x-input.text method="e" name="identification_number" title="identification-number" icon="fingerprint" />
             <x-input.text method="e" name="organisation" title="organisation" icon="building-columns" />
             <x-input.email method="e" name="email" title="email" icon="envelope" />
