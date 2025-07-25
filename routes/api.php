@@ -8,6 +8,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::resource('/participant', \App\Http\Controllers\API\Meeting\Participant\ParticipantController::class)->only(['index']);
         Route::resource('/meeting', \App\Http\Controllers\API\Meeting\MeetingController::class)->only(['index']);
         Route::resource('/hall', \App\Http\Controllers\API\Meeting\Hall\MeetingHallController::class)->only(['index', 'show']);
+        Route::get('/hall/{hall}/active-content', [\App\Http\Controllers\API\Meeting\Hall\MeetingHallController::class, 'activeContent']);
         Route::resource('/hall/{hall}/program', \App\Http\Controllers\API\Meeting\Hall\Program\ProgramController::class)->only(['index', 'show']);
         Route::resource('/program/{program}/session', \App\Http\Controllers\API\Meeting\Hall\Program\Session\ProgramSessionController::class)->only(['index', 'show']);
         Route::resource('/survey', \App\Http\Controllers\API\Meeting\Survey\SurveyController::class)->only(['index', 'show']);

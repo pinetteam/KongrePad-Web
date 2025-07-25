@@ -181,4 +181,68 @@ class MeetingHallController extends Controller
         }
         return $result;
     }
+
+    /**
+     * Get all active content for a specific hall.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function activeContent(Request $request, int $id)
+    {
+        try {
+            $hall = $request->user()->meeting->halls()->findOrFail($id);
+            
+            // Get active program
+            $activeProgram = $hall->programs()->where('is_started', true)->first();
+            
+            // Get active session
+            $activeSession = null;
+            if ($activeProgram) {
+                $activeSession = $activeProgram->sessions()->where('on_air', true)->first();
+            }
+            
+            // Get active keypad
+            $activeKeypad = null;
+            if ($activeSession) {
+                $activeKeypad = $activeSession->keypads()->where('on_vote', true)->first();
+            }
+            
+            // Get active debate
+            $activeDebate = $hall->debates()->where('on_vote', true)->first();
+            
+            $this->logParticipantAction($request->user(), "get-active-content", __('common.hall') . ': ' . $hall->title);
+            
+            return response()->json([
+                'data' => [
+                    'active_program' => $activeProgram ? [
+                        'id' => $activeProgram->id,
+                        'title' => $activeProgram->title,
+                        'is_started' => true
+                    ] : null,
+                    'active_session' => $activeSession ? [
+                        'id' => $activeSession->id,
+                        'session_title' => $activeSession->title,
+                        'speaker_name' => $activeSession->speaker ? $activeSession->speaker->full_name : null,
+                        'document_id' => $activeSession->document_id,
+                        'on_air' => true
+                    ] : null,
+                    'active_keypad' => $activeKeypad ? new KeypadResource($activeKeypad) : null,
+                    'active_debate' => $activeDebate ? new DebateResource($activeDebate) : null
+                ],
+                'status' => true,
+                'errors' => null
+            ], 200);
+            
+        } catch (\Throwable $e) {
+            Log::error('MeetingHallController Error (activeContent): ' . $e->getMessage());
+            
+            return response()->json([
+                'data' => null,
+                'status' => false,
+                'errors' => [$e->getMessage()]
+            ], 500);
+        }
+    }
 }
