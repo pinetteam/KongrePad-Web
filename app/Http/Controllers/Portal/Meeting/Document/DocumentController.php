@@ -34,7 +34,10 @@ class DocumentController extends Controller
             $document->meeting_id = $meeting;
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
-                $file_name = Str::uuid()->toString();
+                // Daha anlamlı dosya ismi oluştur
+                $title_slug = Str::slug($request->input('title'), '-');
+                $timestamp = date('Ymd-His');
+                $file_name = "meeting{$meeting}-{$title_slug}-{$timestamp}";
                 $file_extension = $file->getClientOriginalExtension();
                 if(Storage::putFileAs('public/documents', $request->file('file'), $file_name.'.'.$file_extension)) {
                     $document->file_name = $file_name;
@@ -76,8 +79,15 @@ class DocumentController extends Controller
             $document = $meeting->documents()->findOrFail($id);
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
-                $file_name = $document->file_name;
+                // Yeni dosya için anlamlı isim oluştur
+                $title_slug = Str::slug($request->input('title'), '-');
+                $timestamp = date('Ymd-His');
+                $file_name = "meeting{$meeting}-{$title_slug}-{$timestamp}";
                 $file_extension = $file->getClientOriginalExtension();
+                
+                // Eski dosyayı sil
+                Storage::delete('public/documents/' . $document->file_name . '.' . $document->file_extension);
+                
                 if (Storage::putFileAs('public/documents', $request->file('file'), $file_name.'.'.$file_extension)) {
                     $document->file_name = $file_name;
                     $document->file_extension = $file_extension;
