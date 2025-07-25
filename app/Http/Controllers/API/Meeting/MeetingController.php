@@ -21,8 +21,10 @@ class MeetingController extends Controller
     public function index(Request $request)
     {
         try {
-            // Get the user's meeting
-            $meeting = $request->user()->meeting;
+            // Get the user's meeting with relationships
+            $meeting = $request->user()->meeting()
+                ->with(['halls.programs.sessions.speaker'])
+                ->first();
 
             // Log participant action
             $this->logParticipantAction($request->user(), "get-meeting", $meeting->title);
