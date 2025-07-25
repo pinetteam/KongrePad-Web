@@ -18,7 +18,12 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           cd /var/www/app.kongrepad.com
-          git pull origin main
+          # Fetch latest changes from remote
+          git fetch origin
+          # Reset to match remote main branch exactly (discarding local changes)
+          git reset --hard origin/main
+          # Clean up any untracked files
+          git clean -fd
           composer install --optimize-autoloader --no-dev
           php artisan config:cache
           php artisan route:cache

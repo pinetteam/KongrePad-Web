@@ -83,10 +83,9 @@ class DocumentController extends Controller
                 $document->title
             );
             
-            // Return document with view URL
+            // Return document data (mobile will construct the URL)
             return response()->json([
                 'data' => new DocumentResource($document),
-                'pdf_url' => url('storage/documents/' . $document->file_name . '.' . $document->file_extension),
                 'status' => true,
                 'errors' => null
             ], 200);
