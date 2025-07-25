@@ -39,7 +39,10 @@ class QuestionController extends Controller
             return back()->with('error', __('common.a-system-error-has-occurred'))->withInput();
         } else {
             $meeting_hall_screen = $hall->screens()->where('type', 'questions')->first();
-            event(new QuestionsEvent($meeting_hall_screen));
+            // Null kontrolü ekle
+            if ($meeting_hall_screen) {
+                event(new QuestionsEvent($meeting_hall_screen));
+            }
             return back();
         }
     }
