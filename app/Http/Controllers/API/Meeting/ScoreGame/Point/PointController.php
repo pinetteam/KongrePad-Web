@@ -12,10 +12,10 @@ use Illuminate\Http\Request;
 class PointController extends Controller
 {
     use ParticipantLog;
-    public function index(Request $request, int $score_game)
+    public function index(Request $request, int $score_game_id)
     {
         try{
-            $score_game = $request->user()->meeting->scoreGames()->first();
+            $score_game = $request->user()->meeting->scoreGames()->findOrFail($score_game_id);
             $this->logParticipantAction($request->user(), "get-score-game-points", __('common.score-game') . ': ' . $score_game->title);
             return [
                 'data' => PointResource::collection($score_game->points()->get()->where('participant_id', $request->user()->id)),
@@ -30,11 +30,11 @@ class PointController extends Controller
             ];
         }
     }
-    public function store(Request $request, int $score_game)
+    public function store(Request $request, int $score_game_id)
     {
 
         try{
-            $score_game = $request->user()->meeting->scoreGames()->first();
+            $score_game = $request->user()->meeting->scoreGames()->findOrFail($score_game_id);
             $this->logParticipantAction($request->user(), "scan-qr-code", __('common.score-game') . ': ' . $score_game->title);
             if($request->user()->meeting->qrCodes()->get()->where('code', $request->input('code'))->count() == 0){
                 return [
