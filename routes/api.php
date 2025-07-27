@@ -17,6 +17,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::resource('/virtual-stand', \App\Http\Controllers\API\Meeting\VirtualStand\VirtualStandController::class)->only(['index', 'show']);
         Route::resource('/announcement', \App\Http\Controllers\API\Meeting\Announcement\AnnouncementController::class)->only(['index', 'show']);
         Route::resource('/document', \App\Http\Controllers\API\Meeting\Document\DocumentController::class)->only(['index', 'show']);
+        Route::get('/document/{document}/download', [\App\Http\Controllers\API\Meeting\Document\DocumentController::class, 'download'])->name('document.download');
         Route::resource('/survey/{survey}/question', \App\Http\Controllers\API\Meeting\Survey\Question\QuestionController::class)->only(['index', 'show']);
         Route::resource('/survey/{survey}/vote', \App\Http\Controllers\API\Meeting\Survey\Vote\VoteController::class)->only(['store']);
         Route::resource('/mail', \App\Http\Controllers\API\Meeting\Document\Mail\MailController::class)->only(['store']);

@@ -102,4 +102,62 @@ class DocumentController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Download a document file.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     */
+    public function download(Request $request, int $id)
+    {
+        try {
+            // Get the meeting from the authenticated user
+            $meeting = $request->user()->meeting;
+            
+            // Find the document
+            $document = $meeting->documents()->findOrFail($id);
+            
+            // Check if document is allowed to review
+            if (!$document->allowed_to_review) {
+                return response()->json([
+                    'data' => null,
+                    'status' => false,
+                    'errors' => [__('common.you-are-not-allowed-to-view-this-document')]
+                ], 403);
+            }
+            
+            // Check if file exists
+            $filePath = 'public/documents/' . $document->file_name . '.' . $document->file_extension;
+            if (!\Storage::exists($filePath)) {
+                return response()->json([
+                    'data' => null,
+                    'status' => false,
+                    'errors' => [__('common.file-not-found')]
+                ], 404);
+            }
+            
+            // Log participant action
+            $this->logParticipantAction(
+                $request->user(),
+                "download-document",
+                $document->title
+            );
+            
+            // Return file download
+            return \Storage::download($filePath, $document->title . '.' . $document->file_extension);
+            
+        } catch (\Throwable $e) {
+            // Log the error
+            Log::error('DocumentController Error (download): ' . $e->getMessage());
+            
+            // Return error response
+            return response()->json([
+                'data' => null,
+                'status' => false,
+                'errors' => [$e->getMessage()]
+            ], 500);
+        }
+    }
 }
