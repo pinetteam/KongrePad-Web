@@ -36,7 +36,7 @@ class DocumentController extends Controller
                 $file = $request->file('file');
                 // Daha anlamlı dosya ismi oluştur
                 $title_slug = Str::slug($request->input('title'), '-');
-                $timestamp = date('Ymd-His');
+                $timestamp = date('Ymd-Hi'); // Sadece saat ve dakika, saniye yok
                 $file_name = "meeting{$meeting}-{$title_slug}-{$timestamp}";
                 $file_extension = $file->getClientOriginalExtension();
                 if(Storage::putFileAs('public/documents', $request->file('file'), $file_name.'.'.$file_extension)) {
@@ -81,8 +81,8 @@ class DocumentController extends Controller
                 $file = $request->file('file');
                 // Yeni dosya için anlamlı isim oluştur
                 $title_slug = Str::slug($request->input('title'), '-');
-                $timestamp = date('Ymd-His');
-                $file_name = "meeting{$meeting}-{$title_slug}-{$timestamp}";
+                $timestamp = date('Ymd-Hi'); // Sadece saat ve dakika, saniye yok
+                $file_name = "meeting{$meeting->id}-{$title_slug}-{$timestamp}";
                 $file_extension = $file->getClientOriginalExtension();
                 
                 // Eski dosyayı sil
