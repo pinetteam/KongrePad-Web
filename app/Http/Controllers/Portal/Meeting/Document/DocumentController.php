@@ -34,11 +34,19 @@ class DocumentController extends Controller
             $document->meeting_id = $meeting;
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
-                // Daha anlamlı dosya ismi oluştur
+                // Basit ve tutarlı dosya ismi - timestamp YOK
                 $title_slug = Str::slug($request->input('title'), '-');
-                $timestamp = date('Ymd-Hi'); // Sadece saat ve dakika, saniye yok
-                $file_name = "meeting{$meeting}-{$title_slug}-{$timestamp}";
+                $file_name = "meeting{$meeting}-{$title_slug}";
                 $file_extension = $file->getClientOriginalExtension();
+                
+                // Eğer aynı isimde dosya varsa, numaralandır
+                $counter = 1;
+                $original_file_name = $file_name;
+                while(Storage::exists('public/documents/' . $file_name . '.' . $file_extension)) {
+                    $file_name = $original_file_name . '-' . $counter;
+                    $counter++;
+                }
+                
                 if(Storage::putFileAs('public/documents', $request->file('file'), $file_name.'.'.$file_extension)) {
                     $document->file_name = $file_name;
                     $document->file_extension = $file_extension;
@@ -79,11 +87,20 @@ class DocumentController extends Controller
             $document = $meeting->documents()->findOrFail($id);
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
-                // Yeni dosya için anlamlı isim oluştur
+                // Basit ve tutarlı dosya ismi - timestamp YOK
                 $title_slug = Str::slug($request->input('title'), '-');
-                $timestamp = date('Ymd-Hi'); // Sadece saat ve dakika, saniye yok
-                $file_name = "meeting{$meeting->id}-{$title_slug}-{$timestamp}";
+                $file_name = "meeting{$meeting->id}-{$title_slug}";
                 $file_extension = $file->getClientOriginalExtension();
+                
+                // Eğer aynı isimde dosya varsa (ve mevcut dosya değilse), numaralandır
+                $counter = 1;
+                $original_file_name = $file_name;
+                $current_file = $document->file_name . '.' . $document->file_extension;
+                while(Storage::exists('public/documents/' . $file_name . '.' . $file_extension) && 
+                      ($file_name . '.' . $file_extension) != $current_file) {
+                    $file_name = $original_file_name . '-' . $counter;
+                    $counter++;
+                }
                 
                 // Eski dosyayı sil
                 Storage::delete('public/documents/' . $document->file_name . '.' . $document->file_extension);
