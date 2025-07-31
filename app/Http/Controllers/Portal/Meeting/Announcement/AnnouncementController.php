@@ -29,6 +29,7 @@ class AnnouncementController extends Controller
             $announcement->title = $request->input('title');
             $announcement->publish_at = $request->input('publish_at');
             $announcement->status = $request->input('status');
+            $announcement->is_published = 0; // Yeni eklenen satır
             if ($announcement->save()) {
                 $meeting = Auth::user()->customer->meetings()->findOrFail($meeting);
                 $announcement->created_by = Auth::user()->id;

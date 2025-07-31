@@ -66,7 +66,8 @@ class Participant extends Model
     public function routeNotificationFor($channel)
     {
         if ($channel === 'pusher_beams') {
-            return 'meeting-' . $this->meeting->id . '-' . $this->type . '-' . $this->id;
+            // Announcement bildirimleri için meeting-{id}-announcement formatını kullan
+            return 'meeting-' . $this->meeting_id . '-announcement';
         }
     }
     public function scopeSearchByName($query, $name)

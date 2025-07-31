@@ -2,35 +2,32 @@
 
 namespace App\Notifications;
 
-use NotificationChannels\PusherPushNotifications\PusherChannel;
-use NotificationChannels\PusherPushNotifications\PusherMessage;
 use Illuminate\Notifications\Notification;
 
 class DebateNotification extends Notification
 {
-    public $hall;
-    public function __construct($hall)
+    private $debate;
+
+    public function __construct($debate)
     {
-        $this->hall = $hall;
+        $this->debate = $debate;
     }
+
     public function via($notifiable)
     {
-        return [PusherChannel::class];
+        return ['pusher_beams'];
     }
+
     public function toPushNotification($notifiable)
     {
-        return PusherMessage::create()
-            ->iOS()
-            ->badge(1)
-            ->sound('success')
-            ->body("Debate oylaması başladı!")
-            ->setOption('apns.data.hall_id', $this->hall->id)
-            ->setOption('apns.data.event', 'debate')
-            ->withAndroid(
-                PusherMessage::create()
-                    ->title("Debate oylaması başladı!")
-                    ->setOption('fcm.data.hall_id', $this->hall->id)
-                    ->setOption('fcm.data.event', 'debate')
-            );
+        return [
+            'interests' => $this->debate['interests'] ?? [],
+            'title' => $this->debate['title'],
+            'body' => $this->debate['body'],
+            'data' => [
+                'type' => 'debate',
+                'hall_id' => $this->debate['hall_id'] ?? null
+            ]
+        ];
     }
 }

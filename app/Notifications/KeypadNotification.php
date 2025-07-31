@@ -2,36 +2,32 @@
 
 namespace App\Notifications;
 
-use NotificationChannels\PusherPushNotifications\PusherChannel;
-use NotificationChannels\PusherPushNotifications\PusherMessage;
 use Illuminate\Notifications\Notification;
 
 class KeypadNotification extends Notification
 {
-    public $hall;
+    private $keypad;
 
-    public function __construct($hall)
+    public function __construct($keypad)
     {
-        $this->hall = $hall;
+        $this->keypad = $keypad;
     }
+
     public function via($notifiable)
     {
-        return [PusherChannel::class];
+        return ['pusher_beams'];
     }
+
     public function toPushNotification($notifiable)
     {
-        return PusherMessage::create()
-            ->iOS()
-            ->badge(1)
-            ->sound('success')
-            ->body("Keypad oylaması başladı!")
-            ->setOption('apns.data.hall_id', $this->hall->id)
-            ->setOption('apns.data.event', 'keypad')
-            ->withAndroid(
-                PusherMessage::create()
-                    ->title("Keypad oylaması başladı!")
-                    ->setOption('fcm.data.hall_id', $this->hall->id)
-                    ->setOption('fcm.data.event', 'keypad')
-            );
+        return [
+            'interests' => $this->keypad['interests'] ?? [],
+            'title' => $this->keypad['title'],
+            'body' => $this->keypad['body'],
+            'data' => [
+                'type' => 'keypad',
+                'hall_id' => $this->keypad['hall_id'] ?? null
+            ]
+        ];
     }
 }

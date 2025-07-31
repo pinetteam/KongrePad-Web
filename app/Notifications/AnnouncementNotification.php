@@ -21,9 +21,9 @@ class AnnouncementNotification extends Notification
     public function toPushNotification($notifiable)
     {
         return [
+            'interests' => $this->announcement['interests'] ?? [],
             'title' => $this->announcement['title'],
             'body' => $this->announcement['body'],
-
         ];
     }
 }

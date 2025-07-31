@@ -18,9 +18,33 @@ class PusherBeamsChannel
         if (method_exists($notification, 'toPushNotification')) {
             $data = $notification->toPushNotification($notifiable);
             $interests = $data['interests'] ?? [$notifiable->routeNotificationFor('pusher_beams')];
-            $title = $data['title'] ?? 'No announcements to publish';
-            $body = $data['body'] ?? 'No announcements to publish';
-            return $this->beams->sendNotification($interests, $title, $body);
+            $title = $data['title'] ?? 'Bildirim';
+            $body = $data['body'] ?? '';
+            $extraData = $data['data'] ?? [];
+            
+            // Notification tipine göre uygun metodu çağır
+            if (isset($extraData['type'])) {
+                switch ($extraData['type']) {
+                    case 'keypad':
+                        return $this->beams->sendKeypadNotification(
+                            $interests, 
+                            $title, 
+                            $body, 
+                            $extraData['hall_id'] ?? ''
+                        );
+                    case 'debate':
+                        return $this->beams->sendDebateNotification(
+                            $interests, 
+                            $title, 
+                            $body, 
+                            $extraData['hall_id'] ?? ''
+                        );
+                    default:
+                        return $this->beams->sendNotification($interests, $title, $body, $extraData);
+                }
+            }
+            
+            return $this->beams->sendNotification($interests, $title, $body, $extraData);
         }
         throw new \Exception('Notification does not implement toPushNotification method.');
     }

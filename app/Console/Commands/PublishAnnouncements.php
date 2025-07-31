@@ -26,6 +26,7 @@ class PublishAnnouncements extends Command
         // Yayınlanmamış duyuruları al
         $announcements = Announcement::where('publish_at', '<=', $now)
             ->where('is_published', 0)
+            ->where('status', 1) // Sadece aktif duyurular
             ->get();
 
         if ($announcements->isEmpty()) {
@@ -35,7 +36,7 @@ class PublishAnnouncements extends Command
 
         foreach ($announcements as $announcement) {
             // İlgi alanı oluştur
-            $interests = ['meeting-' . $announcement->id . '-announcement'];
+            $interests = ['meeting-' . $announcement->meeting_id . '-announcement'];
 
             // Bildirim başlık ve içeriği
             $notificationData = [
