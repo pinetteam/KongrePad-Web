@@ -6,6 +6,10 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use App\Events\Service\Keypad\KeypadEvent;
+use App\Events\Service\Debate\DebateEvent;
+use App\Listeners\SendKeypadNotification;
+use App\Listeners\SendDebateNotification;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -17,6 +21,12 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        KeypadEvent::class => [
+            SendKeypadNotification::class,
+        ],
+        DebateEvent::class => [
+            SendDebateNotification::class,
         ],
     ];
 
