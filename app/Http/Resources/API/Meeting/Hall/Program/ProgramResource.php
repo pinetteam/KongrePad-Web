@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources\API\Meeting\Hall\Program;
 
+use App\Http\Resources\API\Meeting\Hall\Program\Chair\ChairResource;
 use App\Http\Resources\API\Meeting\Hall\Program\Debate\DebateResource;
 use App\Http\Resources\API\Meeting\Hall\Program\Session\SessionResource;
 use App\Http\Resources\API\Meeting\Participant\ParticipantResource;
+use App\Models\Meeting\Hall\Program\Chair\Chair;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -22,7 +24,7 @@ class ProgramResource extends JsonResource
             'description' => $this->description,
             'logo_name' => $this->logo_name,
             'logo_extension' => $this->logo_extension,
-            'chairs' => ParticipantResource::collection($this->chairs),
+            'chairs' => ChairResource::collection($this->programChairs),
             'sessions' => SessionResource::collection($this->sessions),
             'debates' => DebateResource::collection($this->debates),
             'start_at' => Carbon::parse($this->start_at)->format('H:i'),
