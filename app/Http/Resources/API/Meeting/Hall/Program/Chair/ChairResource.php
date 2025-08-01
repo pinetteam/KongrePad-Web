@@ -19,7 +19,7 @@ class ChairResource extends JsonResource
             'sort_order' => $this->sort_order,
             'chair_id' => $this->chair_id,
             'type' => $this->type,
-            'chair' => $this->chair()->first_name,
+            'chair' => $this->chair->first_name,
         ];
     }
 }
